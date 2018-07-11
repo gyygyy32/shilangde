@@ -87,8 +87,8 @@ namespace RfidMobile
                         if (buff != null)
                         {
                             m_objModuleInfo = TagDataFormat.ParserTagData(buff);
-
-                            SetRFIDConstants(m_objModuleInfo.customer);
+                            //信息都从标签获取 modify by xue lei on 2018-7-11
+                            //SetRFIDConstants(m_objModuleInfo.customer);
 
                             ChangeState(SystemState.ShowModuleInfo, m_objModuleInfo);
 
@@ -184,33 +184,70 @@ namespace RfidMobile
                 switch (ss)
                 {
                     case SystemState.ShowModuleInfo:
-                        txtManufacturer.Text = string.IsNullOrEmpty(o.mfg_name) ? "" : o.mfg_name;
-                        txtCellSource.Text = string.IsNullOrEmpty(o.Cellsource) ? "" : o.Cellsource;
-                        txtSerialNo.Text = string.IsNullOrEmpty(o.Module_ID) ? "" : o.Module_ID;
-                        txtModelNumber.Text = string.IsNullOrEmpty(o.ProductType) ? "" : o.ProductType;
-                        txtDateOfModuleCell.Text = string.IsNullOrEmpty(o.CellDate) ? "" : o.CellDate;
-                        txtCellDate.Text = string.IsNullOrEmpty(o.CellDate) ? "" : o.CellDate;
-                        txtPIVF.Text = o.Pmax + "Wp," + o.Ipm + "A," + o.Vpm + "V," + o.FF;
-                        txtIecCertificateDate.Text = string.IsNullOrEmpty(o.iec_date) ? "" : o.iec_date;
-                        txtIecCertificateOffer.Text = string.IsNullOrEmpty(o.iec_verfy) ? "" : o.iec_verfy;
-                        txtIecCertificateLab.Text = string.IsNullOrEmpty(o.iso) ? "" : o.iso;
-                        txtMadeIn.Text = string.IsNullOrEmpty(o.cell_supplier_country) ? "" : o.cell_supplier_country;
+                        txtManufacturer.Text = string.IsNullOrEmpty(o.mfg_name) ? "" : o.mfg_name;       //组件厂商
+                        txtCellSource.Text = string.IsNullOrEmpty(o.cell_mfg_name) ? "" : o.cell_mfg_name;//电池厂商
+                        txtSerialNo.Text = string.IsNullOrEmpty(o.Module_ID) ? "" : o.Module_ID;          //组件序列号
+                        txtModelNumber.Text = string.IsNullOrEmpty(o.ProductType) ? "" : o.ProductType;   //产品类型 
+                        txtModuleDate.Text = string.IsNullOrEmpty(o.PackedDate) ? "" : o.PackedDate;          //组件生产日期
+                        txtCellDate.Text = string.IsNullOrEmpty(o.cell_mfg_date) ? "" : o.cell_mfg_date;   //电池生产日期
+                        txtPIVF.Text = o.Pmax + "W," + o.Ipm + "A," + o.Vpm + "V," + o.FF;
+                        txtIecCertificateDate.Text = string.IsNullOrEmpty(o.iec_date) ? "" : o.iec_date;   //证书日期
+
+                        txtIecCertificateLab.Text = string.IsNullOrEmpty(o.iec_verfy) ? "" : o.iec_verfy; //证书名称
+
+                        txtPolarity.Text = string.IsNullOrEmpty(o.polarity_of_terminal) ? "" : o.polarity_of_terminal;//终端极性
+                        txtISO9000Date.Text = string.IsNullOrEmpty(o.iso_9000_date) ? "" : o.iso_9000_date; //ISO9000证书的日期
+                        txtISO9000Name.Text = string.IsNullOrEmpty(o.iso_9000_name) ? "" : o.iso_9000_name;//ISO9000证书的名称
+                        txtISO14000Date.Text = string.IsNullOrEmpty(o.iso_14000_date) ? "" : o.iso_14000_date;//ISO14000证书的日期
+                        txtISO14000Name.Text = string.IsNullOrEmpty(o.iso_14000_name) ? "" : o.iso_14000_name;//ISO14000证书的名称
+
+                        txtMaxPower.Text = string.IsNullOrEmpty(o.max_system_voltage) ? "" : o.max_system_voltage;// 最大系统电压
+
+                        txtModuleCountry.Text = string.IsNullOrEmpty(o.mfg_country) ? "" : o.mfg_country;//组件生产国家
+
+                        txtCellCountry.Text = string.IsNullOrEmpty(o.cell_supplier_country) ? "" : o.cell_supplier_country;//电池生产国家
+                        //txt.Text = string.IsNullOrEmpty(o.cell_supplier_country) ? "" : o.cell_supplier_country;
 
                         ShowIVCurves(double.Parse(o.Isc), double.Parse(o.Ipm), double.Parse(o.Vpm), double.Parse(o.Voc));
+
+                        //显示IV曲线参数 add by xue lei on 2018-7-11
+                        lblPmax.Text = "Pmax:" + o.Pmax + "W";
+                        lblVpm.Text = "Vpm:" + o.Vpm + "V";
+                        lblVoc.Text = "Voc:" + o.Voc + "V";
+                        lblIpm.Text = "Ipm:" + o.Ipm + "A";
+                        lblIsc.Text = "Isc:" + o.Isc + "A";
+                        lblFF.Text = "FF:" + o.FF+"%";
+
                         break;
                     case SystemState.ResetAll:
+                        //txtManufacturer.Text = "";
+                        //txtSerialNo.Text = "";
+                        //txtModelNumber.Text = "";
+                        //txtModuleDate.Text = "";
+                        //txtCellSource.Text = "";
+                        //txtCellDate.Text = "";
+                        //txtPIVF.Text = "";
+                        //txtIecCertificateDate.Text = "";
+                        //txtIecCertificateOffer.Text = "";
+                        //txtIecCertificateLab.Text = "";
+                        //txtMadeIn.Text = "";
                         txtManufacturer.Text = "";
+                        txtCellSource.Text = "";
                         txtSerialNo.Text = "";
                         txtModelNumber.Text = "";
-                        txtDateOfModuleCell.Text = "";
-                        txtCellSource.Text = "";
+                        txtModuleDate.Text = "";
                         txtCellDate.Text = "";
                         txtPIVF.Text = "";
                         txtIecCertificateDate.Text = "";
-                        txtIecCertificateOffer.Text = "";
                         txtIecCertificateLab.Text = "";
-                        txtMadeIn.Text = "";
-
+                        txtPolarity.Text = "";
+                        txtISO9000Date.Text = "";
+                        txtISO9000Name.Text = "";
+                        txtISO14000Date.Text = "";
+                        txtISO14000Name.Text = "";
+                        txtMaxPower.Text = "";
+                        txtModuleCountry.Text = "";
+                        txtCellCountry.Text = "";
                         ivCurves1.SetOriginalPoints(null, true);
                         break;
                     default:
@@ -241,6 +278,11 @@ namespace RfidMobile
         private void Reader_Activated(object sender, EventArgs e)
         {
             _read_tag_timer_enable = true;
+        }
+
+        private void panelBasicInfo_GotFocus(object sender, EventArgs e)
+        {
+
         }
     }
 }

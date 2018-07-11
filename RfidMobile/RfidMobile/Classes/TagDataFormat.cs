@@ -58,7 +58,7 @@ namespace RfidMobile.Classes
             }
         }
 
-        public static ModuleInfo ParserTagData(byte[] tagBuff)
+        public static ModuleInfo ParserTagData1(byte[] tagBuff)
         {
             try
             {
@@ -112,6 +112,105 @@ namespace RfidMobile.Classes
                     rfidTag.iec_verfy = "";
                     rfidTag.iso = "";
                     rfidTag.mfg_name = "";
+
+                    return rfidTag;
+                }
+
+
+                //short length = buffReader.ReadInt16();
+                //I_V_Point[] pointArray = new I_V_Point[length];
+                //for (int i = 0; i < length; i++)
+                //{
+                //    pointArray[i] = new I_V_Point();
+                //    pointArray[i].Current = buffReader.ReadInt32() * 1.0 / 10000000;
+                //    pointArray[i].Voltage = buffReader.ReadInt32() * 1.0 / 10000000;
+                //}
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("解析数据包出错：\r\n" + ex.Message);
+            }
+        }
+        public static ModuleInfo ParserTagData(byte[] tagBuff)
+        {
+            try
+            {
+                MemoryStream memStream = new MemoryStream(tagBuff);
+                BinaryReader buffReader = new BinaryReader(memStream);
+
+                if (buffReader.ReadString() != "@@")
+                {
+                    throw new Exception("数据包开始标志出错");
+                }
+
+                //string customer = buffReader.ReadString();
+                string strProductType = buffReader.ReadString();
+                string strModule_ID = buffReader.ReadString();
+                string mfg_country = buffReader.ReadString();
+                string mfg_name = buffReader.ReadString();
+                string packingDate = buffReader.ReadString();
+                decimal dPmax = (decimal)buffReader.ReadInt32() / 100M;
+                decimal dVoc = (decimal)buffReader.ReadInt16() / 100M;
+                decimal dIsc = (decimal)buffReader.ReadInt16() / 100M;
+                decimal dVpm = (decimal)buffReader.ReadInt16() / 100M;
+                decimal dIpm = (decimal)buffReader.ReadInt16() / 100M;
+                decimal ff = (decimal)buffReader.ReadInt16() / 100M;
+                string cell_mfg_name = buffReader.ReadString();
+                string cell_mfg_date = buffReader.ReadString();
+                string cell_source_country = buffReader.ReadString();
+                string iso_9000_date = buffReader.ReadString();
+                string iso_9000_name = buffReader.ReadString();
+                string iso_14000_date = buffReader.ReadString();
+                string iso_14000_name = buffReader.ReadString();
+                string polarity_of_terminal = buffReader.ReadString();
+                string iec_date = buffReader.ReadString();
+                string iec_verfy = buffReader.ReadString();
+                string max_sys_vol = buffReader.ReadString();
+
+                string packetEnd = buffReader.ReadString();
+
+                if (packetEnd != "##")
+                {
+                    throw new Exception("数据包结束标志出错");
+                }
+                else
+                {
+                    ModuleInfo rfidTag = new ModuleInfo();
+                    //rfidTag.customer = customer;
+                    rfidTag.ProductType = strProductType;
+                    rfidTag.mfg_country = mfg_country;
+                    rfidTag.Module_ID = strModule_ID;
+                    rfidTag.PackedDate = packingDate;
+                    rfidTag.Pmax = dPmax.ToString();
+                    rfidTag.Voc = dVoc.ToString();
+                    rfidTag.Isc = dIsc.ToString();
+                    rfidTag.Vpm = dVpm.ToString();
+                    rfidTag.Ipm = dIpm.ToString();
+                    rfidTag.FF = ff.ToString();
+                    rfidTag.mfg_name = mfg_name;
+
+                    rfidTag.polarity_of_terminal = polarity_of_terminal;
+                    rfidTag.cell_mfg_name = cell_mfg_name;
+                    rfidTag.cell_mfg_date = cell_mfg_date;
+                    rfidTag.cell_supplier_country = cell_source_country;
+
+                    rfidTag.iso_9000_date = iso_9000_date;
+                    rfidTag.iso_9000_name = iso_9000_name;
+                    rfidTag.iso_14000_date = iso_14000_date;
+                    rfidTag.iso_14000_name = iso_14000_name;
+
+                    rfidTag.iec_date = iec_date;
+                    rfidTag.iec_verfy = iec_verfy;
+
+                    rfidTag.max_system_voltage = max_sys_vol;
+                    rfidTag.cell_supplier_country = cell_source_country;
+
+
+                    //rfidTag.iso = ms_iso;
+                    //rfidTag.mfg_name = ms_cfg_mfg_name;
+
+                    //SetRFIDConstants(customer);
+
 
                     return rfidTag;
                 }
