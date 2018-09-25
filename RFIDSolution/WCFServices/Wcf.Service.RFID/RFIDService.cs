@@ -64,12 +64,12 @@ namespace Wcf.Service.RFID
         private const string m_errLogFileName = "rfidErrorLog.txt";
 
         public void WriteLog(object[] parms)
-        { 
-            string tagID=(string)parms[0];
+        {
+            string tagID = (string)parms[0];
             string moduleid = (string)parms[1];
             string basic = (string)parms[2];
 
-            tagID=tagID.Replace(" ","");
+            tagID = tagID.Replace(" ", "");
 
             string createtime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
@@ -113,17 +113,17 @@ values('{0}','{1}','{2}','{3}','')
         }
 
         public void writeTag()
-        { 
-            
+        {
+
         }
 
         public void readTag()
-        { 
+        {
         }
 
         public ModuleInfo getModuleInfo(object[] parms)
         {
-            string serial=(string)parms[0];
+            string serial = (string)parms[0];
             string uniqueTid = (string)parms[1];
 
             //check if this tag has writen data before by unique tid
@@ -138,7 +138,7 @@ values('{0}','{1}','{2}','{3}','')
             string sql = "";
 
 #if SQLSERVER_ShiLangDe
-//dic.Add(sp_parm_serial_no, serial);
+            //dic.Add(sp_parm_serial_no, serial);
             //SUBSTRING(CONVERT(varchar(100), TestTime, 20),1,7) testtime 直接取值
             conn = connect_string;
             sql = @"
@@ -245,7 +245,7 @@ LotNumber,
             });
             */
 
-            mi = miList == null? null: miList.FirstOrDefault();
+            mi = miList == null ? null : miList.FirstOrDefault();
 
             if (mi != null)
             {
@@ -524,13 +524,14 @@ LotNumber,
 #endif
 
             return mi;
-            
+
         }
 
-        
+
     }
 
-    enum DB_Type { 
+    enum DB_Type
+    {
         MySql,
         SqlServer,
         Oracle

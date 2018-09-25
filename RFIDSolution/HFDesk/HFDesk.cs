@@ -252,6 +252,36 @@ namespace HFDesk
             }
            
         }
+
+        private void menu_setting_Click(object sender, EventArgs e)
+        {
+            //return;
+
+            if (!_licensedPorduct)
+            {
+                MessageBox.Show("the product is not licensed!");
+                return;
+            }
+
+            foreach (Form f in this.MdiChildren)
+            {
+                if (f.Tag.ToString() == "Setting")
+                {
+                    f.BringToFront();
+                    return;
+                }
+            }
+
+            Setting newMDIChild = new Setting();
+            newMDIChild.Tag = "Setting";
+            // Set the Parent Form of the Child window.  
+            newMDIChild.MdiParent = this;
+            // Display the new form.  
+            //newMDIChild.WindowState = FormWindowState.Maximized;
+            newMDIChild.Show();
+            newMDIChild.WindowState = FormWindowState.Normal;
+            //newMDIChild.WindowState = FormWindowState.Maximized;
+        }
       
     }
 

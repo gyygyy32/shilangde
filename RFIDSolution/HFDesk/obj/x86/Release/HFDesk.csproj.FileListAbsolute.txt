@@ -18,3 +18,7 @@ C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\obj\x86\Release\HFDesk.Q8T
 C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\obj\x86\Release\HFDesk.csproj.GenerateResource.Cache
 C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\obj\x86\Release\HLKJ.exe
 C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\obj\x86\Release\HLKJ.pdb
+C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\obj\x86\Release\HFDesk.Setting.resources
+C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\bin\Release\Newtonsoft.Json.dll
+C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\bin\Release\Newtonsoft.Json.pdb
+C:\01 Code\02 HL\UFRFID\shilangde\RFIDSolution\HFDesk\bin\Release\Newtonsoft.Json.xml

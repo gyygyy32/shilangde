@@ -12,6 +12,7 @@ using System.Threading;
 using System.Speech.Synthesis;
 using CustomControl;
 using RFIDService.ClientData;
+using System.Data.Odbc;
 
 
 namespace HFDesk
@@ -87,7 +88,7 @@ namespace HFDesk
             //ms_iec_verfy = System.Configuration.ConfigurationManager.AppSettings["iec_verfy"];
             //ms_iso = System.Configuration.ConfigurationManager.AppSettings["iso"];
             //ms_producttype = System.Configuration.ConfigurationManager.AppSettings["producttype"];
-
+            QueryCSVToOdbc();
             InitRFIDConstants();
 
 
@@ -948,6 +949,55 @@ namespace HFDesk
 
             ReadTag1._read_tag_timer_enable = false;
         }
+
+        //读取csv
+        /// <summary>
+        /// Odbc查询CSV
+        /// </summary>
+        public static void QueryCSVToOdbc()
+        {
+            //读取配置文件
+            string path = new Jsonhelp().readjson("CSVFilePath", AppDomain.CurrentDomain.BaseDirectory + "config.json");
+            //文件路径
+            string tableName = path.Substring(path.LastIndexOf('\\')+1);
+            string filePath = path.Substring(0, path.LastIndexOf('\\') + 1);//AppDomain.CurrentDomain.BaseDirectory;
+
+            string pContent = string.Empty;
+
+            OdbcConnection odbcConn = new OdbcConnection();
+            OdbcCommand odbcCmd = new OdbcCommand();
+            OdbcDataReader dataReader;
+            try
+            {
+                string strConnOledb = "Driver={Microsoft Text Driver (*.txt; *.csv)};Dbq=";
+                strConnOledb += filePath;
+                strConnOledb += ";Extensions=csv,txt;";
+
+                odbcConn.ConnectionString = strConnOledb;
+                odbcConn.Open();
+                StringBuilder commandText = new StringBuilder("SELECT  ");
+                commandText.AppendFormat("Date,Time,Snr,Voc,Isc,Pmax,Vpmax,Ipmax,FF From {0} where Snr ='CETCP6051ED534052' ", tableName);
+                odbcCmd.Connection = odbcConn;
+                odbcCmd.CommandText = commandText.ToString();
+                dataReader = odbcCmd.ExecuteReader();
+
+
+                while (dataReader.Read())
+                {
+                    pContent = Convert.ToString(dataReader["content"]);
+                }
+                dataReader.Close();
+            }
+            catch (System.Exception ex)
+            {
+                odbcConn.Close();
+            }
+            finally
+            {
+                odbcConn.Close();
+            }
+        }
+
          
     }
 

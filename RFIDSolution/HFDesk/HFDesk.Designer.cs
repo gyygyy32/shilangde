@@ -36,6 +36,7 @@
             this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_about = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_register = new System.Windows.Forms.ToolStripMenuItem();
+            this.设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,11 +44,12 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.标签读写ToolStripMenuItem,
-            this.帮助ToolStripMenuItem});
+            this.帮助ToolStripMenuItem,
+            this.设置ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(1184, 35);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1052, 28);
             this.menuStrip1.TabIndex = 22;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -57,20 +59,20 @@
             this.menu_writeTag,
             this.menu_readTag});
             this.标签读写ToolStripMenuItem.Name = "标签读写ToolStripMenuItem";
-            this.标签读写ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
+            this.标签读写ToolStripMenuItem.Size = new System.Drawing.Size(85, 24);
             this.标签读写ToolStripMenuItem.Text = "标签读写";
             // 
             // menu_writeTag
             // 
             this.menu_writeTag.Name = "menu_writeTag";
-            this.menu_writeTag.Size = new System.Drawing.Size(141, 30);
+            this.menu_writeTag.Size = new System.Drawing.Size(126, 24);
             this.menu_writeTag.Text = "写标签";
             this.menu_writeTag.Click += new System.EventHandler(this.menu_writeTag_Click);
             // 
             // menu_readTag
             // 
             this.menu_readTag.Name = "menu_readTag";
-            this.menu_readTag.Size = new System.Drawing.Size(141, 30);
+            this.menu_readTag.Size = new System.Drawing.Size(126, 24);
             this.menu_readTag.Text = "读标签";
             this.menu_readTag.Click += new System.EventHandler(this.menu_readTag_Click);
             // 
@@ -80,13 +82,13 @@
             this.menu_about,
             this.menu_register});
             this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
-            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
             this.帮助ToolStripMenuItem.Text = "帮助";
             // 
             // menu_about
             // 
             this.menu_about.Name = "menu_about";
-            this.menu_about.Size = new System.Drawing.Size(122, 30);
+            this.menu_about.Size = new System.Drawing.Size(110, 24);
             this.menu_about.Text = "关于";
             this.menu_about.Visible = false;
             this.menu_about.Click += new System.EventHandler(this.menu_about_Click);
@@ -94,20 +96,27 @@
             // menu_register
             // 
             this.menu_register.Name = "menu_register";
-            this.menu_register.Size = new System.Drawing.Size(122, 30);
+            this.menu_register.Size = new System.Drawing.Size(110, 24);
             this.menu_register.Text = "注册";
             this.menu_register.Click += new System.EventHandler(this.menu_register_Click);
             // 
+            // 设置ToolStripMenuItem
+            // 
+            this.设置ToolStripMenuItem.Name = "设置ToolStripMenuItem";
+            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
+            this.设置ToolStripMenuItem.Text = "设置";
+            this.设置ToolStripMenuItem.Click += new System.EventHandler(this.menu_setting_Click);
+            // 
             // HFDesk
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 818);
+            this.ClientSize = new System.Drawing.Size(1052, 682);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "HFDesk";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "常州互利智能科技有限公司-高频RFID读写程序 for 红太阳";
@@ -129,6 +138,7 @@
         private System.Windows.Forms.ToolStripMenuItem menu_writeTag;
         private System.Windows.Forms.ToolStripMenuItem menu_readTag;
         private System.Windows.Forms.ToolStripMenuItem menu_register;
+        private System.Windows.Forms.ToolStripMenuItem 设置ToolStripMenuItem;
     }
 }
 

@@ -37,6 +37,10 @@
     <ApplicationIcon>hllogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -56,17 +60,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form\ActivateProduct.cs">
+    <Compile Include="Forms\ActivateProduct.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\ActivateProduct.Designer.cs">
+    <Compile Include="Forms\ActivateProduct.Designer.cs">
       <DependentUpon>ActivateProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Setting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Setting.Designer.cs">
+      <DependentUpon>Setting.cs</DependentUpon>
     </Compile>
     <Compile Include="helpClass\CCommondMethod.cs" />
     <Compile Include="helpClass\common.cs" />
     <Compile Include="helpClass\DealINI.cs" />
     <Compile Include="helpClass\Hardwares.cs" />
     <Compile Include="helpClass\ISO15693Commands.cs" />
+    <Compile Include="helpClass\Jsonhelp.cs" />
     <Compile Include="helpClass\MD5Handler.cs" />
     <Compile Include="helpClass\mifareone.cs" />
     <Compile Include="helpClass\RFIDConstants.cs" />
@@ -87,26 +98,29 @@
     <Compile Include="Q8Test.Designer.cs">
       <DependentUpon>Q8Test.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\WriteTag1.cs">
+    <Compile Include="Forms\WriteTag1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\WriteTag1.Designer.cs">
+    <Compile Include="Forms\WriteTag1.Designer.cs">
       <DependentUpon>WriteTag1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\ReadTag1.cs">
+    <Compile Include="Forms\ReadTag1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\ReadTag1.Designer.cs">
+    <Compile Include="Forms\ReadTag1.Designer.cs">
       <DependentUpon>ReadTag1.cs</DependentUpon>
     </Compile>
     <Compile Include="ReaderInfo.cs" />
-    <EmbeddedResource Include="Form\ActivateProduct.resx">
+    <EmbeddedResource Include="Forms\ActivateProduct.resx">
       <DependentUpon>ActivateProduct.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\ReadTag1.resx">
+    <EmbeddedResource Include="Forms\ReadTag1.resx">
       <DependentUpon>ReadTag1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\WriteTag1.resx">
+    <EmbeddedResource Include="Forms\Setting.resx">
+      <DependentUpon>Setting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WriteTag1.resx">
       <DependentUpon>WriteTag1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HFDesk.resx">
@@ -131,6 +145,7 @@
     <None Include="config.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="config.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -142,6 +157,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="config.xml" />
     <Content Include="hllogo.ico" />
     <Content Include="mwrf32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
