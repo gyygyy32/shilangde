@@ -970,6 +970,14 @@ namespace HFDesk
 
             //读取配置文件
             string path = new Jsonhelp().readjson("CSVFilePath", AppDomain.CurrentDomain.BaseDirectory + "config.json");
+
+            if (!System.IO.File.Exists(path))
+            {
+                MessageBox.Show("没有找到CSV文件");
+                paintBackgroundColor(statusType.FAIL);
+                return null;
+            }
+
             //文件路径
             string tableName = path.Substring(path.LastIndexOf('\\')+1);
             string filePath = path.Substring(0, path.LastIndexOf('\\') + 1);//AppDomain.CurrentDomain.BaseDirectory;
@@ -991,7 +999,7 @@ namespace HFDesk
                 commandText.AppendFormat("Date,Time,Snr,Voc,Isc,Pmax,Vpmax,Ipmax,FF From {0} where Snr ='"+lot+"' ", tableName);
                 odbcCmd.Connection = odbcConn;
                 odbcCmd.CommandText = commandText.ToString();
-                dataReader = odbcCmd.ExecuteReader();
+                dataReader = odbcCmd.ExecuteReader(CommandBehavior.CloseConnection);
                 string moduletime = string.Empty;
                 if (dataReader.Read())
                 {
@@ -1011,7 +1019,7 @@ namespace HFDesk
                 {
                     DoFailStuff(m_sSerialNumber + " " + "未找到组件记录！");
                 }
-                dataReader.Close();
+                //dataReader.Close();
                 ShowIVCurves(double.Parse(objModule.Isc), double.Parse(objModule.Ipm), double.Parse(objModule.Vpm), double.Parse(objModule.Voc));
                 byte[] btData = TagDataFormat.CreateByteArray(objModule, configData);
                 oModuleInfo = objModule;
@@ -1022,6 +1030,7 @@ namespace HFDesk
             }
             catch (System.Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 odbcConn.Close();
                 byte[] data = null;
                 return data;
