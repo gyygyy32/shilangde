@@ -88,7 +88,7 @@ namespace HFDesk
             //ms_iec_verfy = System.Configuration.ConfigurationManager.AppSettings["iec_verfy"];
             //ms_iso = System.Configuration.ConfigurationManager.AppSettings["iso"];
             //ms_producttype = System.Configuration.ConfigurationManager.AppSettings["producttype"];
-            QueryCSVToOdbc();
+            //QueryCSVToOdbc();
             InitRFIDConstants();
 
 
@@ -210,7 +210,6 @@ namespace HFDesk
                 if (dic_customer_RFID_constants.ContainsKey(customer))
                 {
                     const_parameters = dic_customer_RFID_constants[customer];
-
                     //ms_cfg_mfg_name = const_parameters.mfg_name;
                     //ms_cfg_mfg_country = const_parameters.mfg_country;
                     //ms_iec_date = const_parameters.iec_date;
@@ -249,13 +248,128 @@ namespace HFDesk
                             WriteLog(lrtxtLog, "没有发现标签！", 1);
                             common.rf_beep(ReaderInfo.icdev, 20);
                             paintBackgroundColor(statusType.FAIL);
-
-                        
-
                             List<string> csvValueList = new List<string> { System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), m_sSerialNumber, "Fail", "" };
                             WriteCSVLog.WriteCSV(csvValueList);
                             SetSerialTxtFocus();
                             Speech("烧录失败");
+                        }
+                        else
+                        {
+                            if ("CSV" == "CSV")
+                            {
+                                WriteRfid( QueryCSVToOdbc(const_parameters, ser));
+
+                            }
+                            else
+                            {
+                                #region query data from database
+                                WcfCaller.querySerialInfo((o, ex) =>
+                                {
+                                    if (ex == null)
+                                    {
+                                        if (o == null)
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + "未找到组件记录！");
+                                            return;
+                                        }
+
+                                        #region chech region state
+
+
+
+                                        if (string.IsNullOrEmpty(o.ProductType))
+                                        {
+                                            o.ProductType = const_parameters.product_type;
+                                            //DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt01);
+                                            //return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.CellDate))
+                                        {
+                                            o.CellDate = const_parameters.cell_mfg_date;
+                                            //DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt02);
+                                            //return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.PackedDate))
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt03);
+                                            return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.Pmax))
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt04);
+                                            return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.Voc))
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt05);
+                                            return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.Vpm))
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt06);
+                                            return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.Ipm))
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt07);
+                                            return;
+                                        }
+                                        if (string.IsNullOrEmpty(o.Isc))
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt08);
+                                            return;
+                                        }
+                                        #endregion
+
+                                        ShowIVCurves(double.Parse(o.Isc), double.Parse(o.Ipm), double.Parse(o.Vpm), double.Parse(o.Voc));
+
+                                        o.customer = cbx_customer.SelectedValue.ToString();
+                                        //SetRFIDConstants(o.customer);
+
+
+                                        byte[] btData = TagDataFormat.CreateByteArray(o, const_parameters);
+
+                                        oModuleInfo = o;
+
+                                        m_sBasicInfo = o.ProductType + "|" + o.PackedDate.Replace("-", ".") + "|"
+                                            + o.Pivf + "|" + o.Module_ID + "|" + o.CellDate.Replace("-", ".") + "|3";
+
+                                        if (WriteData(btData))
+                                        {
+                                            //WriteLog2DB();
+
+                                            paintBackgroundColor(statusType.PASS);
+                                            WriteLog(lrtxtLog, m_sSerialNumber + " " + "烧录成功！", 0);
+                                            common.rf_beep(ReaderInfo.icdev, 10);
+                                            List<string> csvValueList = new List<string> { System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), m_sSerialNumber, "Pass", m_sTagUIDstring, m_sBasicInfo };
+                                            WriteCSVLog.WriteCSV(csvValueList);
+                                            ShowModuleInfo(true, const_parameters);
+                                            Speech("烧录成功");
+
+                                        }
+                                        else
+                                        {
+                                            DoFailStuff(m_sSerialNumber + " " + "烧录失败！");
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        DoFailStuff("与服务器通讯发生异常" + ex.Message);
+
+                                    }
+                                    SetSerialTxtFocus();
+
+                                }, new string[] { m_sSerialNumber, m_sTagUIDstring });
+                                #endregion
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if ("CSV" == "CSV")
+                        {
+                            QueryCSVToOdbc(const_parameters, ser);
                         }
                         else
                         {
@@ -264,15 +378,13 @@ namespace HFDesk
                             {
                                 if (ex == null)
                                 {
-                                    if (o==null)
+                                    if (o == null)
                                     {
                                         DoFailStuff(m_sSerialNumber + " " + "未找到组件记录！");
                                         return;
                                     }
 
                                     #region chech region state
-
-
 
                                     if (string.IsNullOrEmpty(o.ProductType))
                                     {
@@ -323,132 +435,30 @@ namespace HFDesk
                                     o.customer = cbx_customer.SelectedValue.ToString();
                                     //SetRFIDConstants(o.customer);
 
-
-                                    byte[] btData = TagDataFormat.CreateByteArray(o, const_parameters);
-
                                     oModuleInfo = o;
 
-                                    m_sBasicInfo = o.ProductType + "|" + o.PackedDate.Replace("-", ".") + "|" 
-                                        + o.Pivf + "|" + o.Module_ID + "|" + o.CellDate.Replace("-", ".") + "|3";
+                                    paintBackgroundColor(statusType.PASS);
 
-                                    if (WriteData(btData))
-                                    {
-                                        //WriteLog2DB();
+                                    ShowModuleInfo(true, const_parameters);
 
-                                        paintBackgroundColor(statusType.PASS);
-                                        WriteLog(lrtxtLog, m_sSerialNumber + " " + "烧录成功！", 0);
-                                        common.rf_beep(ReaderInfo.icdev, 10);
-                                        List<string> csvValueList = new List<string> { System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), m_sSerialNumber, "Pass", m_sTagUIDstring, m_sBasicInfo };
-                                        WriteCSVLog.WriteCSV(csvValueList);
-                                        ShowModuleInfo(true, const_parameters);
-                                        Speech("烧录成功");
-                                        
-                                    }
-                                    else
-                                    {
-                                        DoFailStuff(m_sSerialNumber + " " + "烧录失败！");
-                                        
-                                    }
+                                    WriteLog(lrtxtLog, m_sSerialNumber + " " + "获取功率信息成功！", 0);
+
+                                    SetSerialTxtFocus();
                                 }
                                 else
                                 {
                                     DoFailStuff("与服务器通讯发生异常" + ex.Message);
-                                    
+                                    //WriteLog(lrtxtLog, "与服务器通讯发生异常"+ex.Message, 1);
+                                    //common.rf_beep(ReaderInfo.icdev, 20);
+                                    //paintBackgroundColor(statusType.FAIL);
+                                    //List<string> csvValueList = new List<string> { System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), m_sSerialNumber, "Fail", "" };
+                                    //WriteCSVLog.WriteCSV(csvValueList);
+                                    //SetSerialTxtFocus();
+                                    //Speech("烧录失败");
                                 }
-                                SetSerialTxtFocus();
-                                
                             }, new string[] { m_sSerialNumber, m_sTagUIDstring });
-                            #endregion
-                            
+                            #endregion}
                         }
-                    }
-                    else
-                    {
-                        #region query data from database
-                        WcfCaller.querySerialInfo((o, ex) =>
-                        {
-                            if (ex == null)
-                            {
-                                if (o == null)
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + "未找到组件记录！");
-                                    return;
-                                }
-
-                                #region chech region state
-
-                                if (string.IsNullOrEmpty(o.ProductType))
-                                {
-                                    o.ProductType = const_parameters.product_type;
-                                    //DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt01);
-                                    //return;
-                                }
-                                if (string.IsNullOrEmpty(o.CellDate))
-                                {
-                                    o.CellDate = const_parameters.cell_mfg_date;
-                                    //DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt02);
-                                    //return;
-                                }
-                                if (string.IsNullOrEmpty(o.PackedDate))
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt03);
-                                    return;
-                                }
-                                if (string.IsNullOrEmpty(o.Pmax))
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt04);
-                                    return;
-                                }
-                                if (string.IsNullOrEmpty(o.Voc))
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt05);
-                                    return;
-                                }
-                                if (string.IsNullOrEmpty(o.Vpm))
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt06);
-                                    return;
-                                }
-                                if (string.IsNullOrEmpty(o.Ipm))
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt07);
-                                    return;
-                                }
-                                if (string.IsNullOrEmpty(o.Isc))
-                                {
-                                    DoFailStuff(m_sSerialNumber + " " + Resources.strPrompt08);
-                                    return;
-                                }
-                                #endregion
-
-                                ShowIVCurves(double.Parse(o.Isc), double.Parse(o.Ipm), double.Parse(o.Vpm), double.Parse(o.Voc));
-
-                                o.customer = cbx_customer.SelectedValue.ToString();
-                                //SetRFIDConstants(o.customer);
-
-                                oModuleInfo = o;
-
-                                paintBackgroundColor(statusType.PASS);
-
-                                ShowModuleInfo(true, const_parameters);
-
-                                WriteLog(lrtxtLog, m_sSerialNumber + " " + "获取功率信息成功！", 0);
-
-                                SetSerialTxtFocus();
-                            }
-                            else
-                            {
-                                DoFailStuff("与服务器通讯发生异常" + ex.Message);
-                                //WriteLog(lrtxtLog, "与服务器通讯发生异常"+ex.Message, 1);
-                                //common.rf_beep(ReaderInfo.icdev, 20);
-                                //paintBackgroundColor(statusType.FAIL);
-                                //List<string> csvValueList = new List<string> { System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), m_sSerialNumber, "Fail", "" };
-                                //WriteCSVLog.WriteCSV(csvValueList);
-                                //SetSerialTxtFocus();
-                                //Speech("烧录失败");
-                            }
-                        }, new string[] { m_sSerialNumber, m_sTagUIDstring });
-                        #endregion
                     }
 
                     
@@ -954,8 +964,10 @@ namespace HFDesk
         /// <summary>
         /// Odbc查询CSV
         /// </summary>
-        public static void QueryCSVToOdbc()
+        public byte[] QueryCSVToOdbc(RFIDConstants configData,string lot)
         {
+            ModuleInfo objModule = new ModuleInfo();
+
             //读取配置文件
             string path = new Jsonhelp().readjson("CSVFilePath", AppDomain.CurrentDomain.BaseDirectory + "config.json");
             //文件路径
@@ -976,21 +988,43 @@ namespace HFDesk
                 odbcConn.ConnectionString = strConnOledb;
                 odbcConn.Open();
                 StringBuilder commandText = new StringBuilder("SELECT  ");
-                commandText.AppendFormat("Date,Time,Snr,Voc,Isc,Pmax,Vpmax,Ipmax,FF From {0} where Snr ='CETCP6051ED534052' ", tableName);
+                commandText.AppendFormat("Date,Time,Snr,Voc,Isc,Pmax,Vpmax,Ipmax,FF From {0} where Snr ='"+lot+"' ", tableName);
                 odbcCmd.Connection = odbcConn;
                 odbcCmd.CommandText = commandText.ToString();
                 dataReader = odbcCmd.ExecuteReader();
-
-
-                while (dataReader.Read())
+                string moduletime = string.Empty;
+                if (dataReader.Read())
                 {
-                    pContent = Convert.ToString(dataReader["content"]);
+                    moduletime = DateTime.Parse(dataReader["Date"].ToString()).ToString("yyyy-MM-dd") + " " + DateTime.Parse(dataReader["Time"].ToString()).ToString("HH:mm:ss");
+                    objModule.PackedDate = moduletime;
+                    objModule.CellDate = moduletime;
+                    objModule.Pmax = dataReader["Pmax"].ToString();
+                    objModule.Voc = dataReader["Voc"].ToString();
+                    objModule.Vpm = dataReader["Vpmax"].ToString();
+                    objModule.Ipm = dataReader["Ipmax"].ToString();
+                    objModule.Isc = dataReader["Isc"].ToString();
+                    objModule.FF = dataReader["FF"].ToString();
+                    objModule.Module_ID = lot;
+                    objModule.ProductType = configData.product_type;
+                }
+                else
+                {
+                    DoFailStuff(m_sSerialNumber + " " + "未找到组件记录！");
                 }
                 dataReader.Close();
+                ShowIVCurves(double.Parse(objModule.Isc), double.Parse(objModule.Ipm), double.Parse(objModule.Vpm), double.Parse(objModule.Voc));
+                byte[] btData = TagDataFormat.CreateByteArray(objModule, configData);
+                oModuleInfo = objModule;
+                ShowModuleInfo(true, configData);
+                paintBackgroundColor(statusType.PASS);
+                return btData;
+                
             }
             catch (System.Exception ex)
             {
                 odbcConn.Close();
+                byte[] data = null;
+                return data;
             }
             finally
             {
@@ -998,7 +1032,28 @@ namespace HFDesk
             }
         }
 
-         
+        public void WriteRfid(byte[] data)
+        {
+            if (data != null)
+            {
+                if (WriteData(data))
+                {
+                    //WriteLog2DB();
+
+                    paintBackgroundColor(statusType.PASS);
+                    WriteLog(lrtxtLog, m_sSerialNumber + " " + "烧录成功！", 0);
+                    common.rf_beep(ReaderInfo.icdev, 10);
+                    List<string> csvValueList = new List<string> { System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), m_sSerialNumber, "Pass", m_sTagUIDstring, m_sBasicInfo };
+                    WriteCSVLog.WriteCSV(csvValueList);
+                    
+                    Speech("烧录成功");
+                }
+                else
+                {
+                    DoFailStuff(m_sSerialNumber + " " + "烧录失败！");
+                }
+            }
+        } 
     }
 
     public class CustomerInfo

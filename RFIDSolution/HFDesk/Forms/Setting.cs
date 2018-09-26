@@ -32,5 +32,10 @@ namespace HFDesk
                 new Jsonhelp().writejson("CSVFilePath", file, AppDomain.CurrentDomain.BaseDirectory + "config.json");
             }
         }
+
+        private void Setting_Load(object sender, EventArgs e)
+        {
+            txtCSVPath.Text = new Jsonhelp().readjson("CSVFilePath", AppDomain.CurrentDomain.BaseDirectory + "config.json");
+        }
     }
 }
